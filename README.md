@@ -1,3 +1,6 @@
+# Webscraper+ V2 tutorial here if ur retarded jk i luv u
+https://drive.google.com/file/d/1vTrHTJ0pY2UrlUhtBOYE3wyopjjneWBP/view?usp=sharing
+
 # WebScraper+ V1 By Germanized
 
 WebScraper+ is a Python script designed for scraping and saving website content. It supports GitHub Pages compatibility and provides options for both manual and automated scraping.
