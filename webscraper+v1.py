@@ -12,7 +12,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from colorama import init, Style
 
-# Initialize Colorama
 init()
 
 def rgb_to_ansi(r, g, b):
@@ -44,23 +43,20 @@ def set_console_title(title):
         time.sleep(1)
 
 def setup_chrome_driver():
-    # Automatically install the correct version of ChromeDriver
     chromedriver_path = chromedriver_autoinstaller.install()
     
     if not chromedriver_path:
         print("Failed to install ChromeDriver.")
         return None
 
-    # Set up undetected ChromeDriver with the correct version
     options = uc.ChromeOptions()
     options.add_argument("--ignore-certificate-errors")
     options.add_argument("--disable-web-security")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
-    options.headless = False  # Run in non-headless mode for debugging
+    options.headless = False  
     
     try:
-        # Initialize Chrome with undetected_chromedriver
         driver = uc.Chrome(options=options, driver_executable_path=chromedriver_path)
         return driver
     except Exception as e:
@@ -74,7 +70,7 @@ def main():
 
     url = input(color_fade("Enter the URL of the website you want to copy: ", "00ffff", "0000ff")).strip()
     if not urlparse(url).scheme:
-        url = 'http://' + url  # Ensure URL has a scheme
+        url = 'http://' + url  
 
     github_pages = input(color_fade("Would you like this to be GitHub Pages compatible? (Y/N): ", "00ffff", "0000ff")).strip().lower()
     github_pages_compatible = github_pages == 'y'
@@ -103,7 +99,7 @@ def main():
     else:
         driver = None
         max_retries = 5
-        retry_delay = 5  # in seconds
+        retry_delay = 5  
         retry_count = 0
 
         while retry_count < max_retries:
@@ -146,7 +142,7 @@ def fetch_page_source(driver):
         return None
 
 def save_content(url, directory, github_pages_compatible):
-    # Ensure the URL has a scheme
+    
     if not urlparse(url).scheme:
         url = 'http://' + url
 
@@ -182,16 +178,14 @@ def save_github_pages_compatible(soup, directory, url):
     js_files = [js.get('src') for js in soup.find_all('script') if js.get('src')]
     css_files = [css.get('href') for css in soup.find_all('link', {'rel': 'stylesheet'}) if css.get('href')]
 
-    # Save HTML as index.html
+   
     with open(os.path.join(directory, 'index.html'), 'w', encoding='utf-8') as f:
         f.write(html_content)
     print(color_fade(f"Saved GitHub Pages-compatible HTML: {os.path.join(directory, 'index.html')}", "00ffff", "0000ff"))
 
-    # Save JavaScript files
     for js_url in js_files:
         save_asset(urljoin(url, js_url), os.path.join(directory, 'scripts.js'))
 
-    # Save CSS files
     for css_url in css_files:
         save_asset(urljoin(url, css_url), os.path.join(directory, 'styles.css'))
 
@@ -241,7 +235,7 @@ def main():
 
     url = input(color_fade("Enter the URL of the website you want to copy: ", "00ffff", "0000ff")).strip()
     if not urlparse(url).scheme:
-        url = 'http://' + url  # Ensure URL has a scheme
+        url = 'http://' + url  
 
     github_pages = input(color_fade("Would you like this to be GitHub Pages compatible? (Y/N): ", "00ffff", "0000ff")).strip().lower()
     github_pages_compatible = github_pages == 'y'
@@ -270,7 +264,7 @@ def main():
     else:
         driver = None
         max_retries = 5
-        retry_delay = 5  # in seconds
+        retry_delay = 5  
         retry_count = 0
 
         while retry_count < max_retries:
