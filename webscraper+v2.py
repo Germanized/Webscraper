@@ -9,7 +9,6 @@ from selenium.common.exceptions import WebDriverException
 import pygetwindow as gw
 from colorama import init, Style
 
-# Initialize Colorama
 init()
 
 def rgb_to_ansi(r, g, b):
@@ -55,7 +54,7 @@ def setup_driver(remote_debugging_port=9222):
     return driver
 
 def update_tabs(driver):
-    known_tabs = {}  # Dictionary to keep track of known tabs
+    known_tabs = {}  
     initial_fetch = True
     index = 1
 
@@ -79,16 +78,14 @@ def update_tabs(driver):
                 
                 current_tabs[tab] = (url, title)
             
-            # Detect closed tabs
             closed_tabs = set(known_tabs) - set(current_tabs)
             for closed_tab in closed_tabs:
                 print(color_fade(f"Tab closed: {known_tabs[closed_tab][0]} ({closed_tab})", "ff0000", "0000ff"))
                 del known_tabs[closed_tab]
             
-            # Update known tabs with the current state
             known_tabs.update({tab: current_tabs[tab] for tab in current_tabs})
             
-            initial_fetch = False  # Only print "Fetching tabs..." initially
+            initial_fetch = False 
             
         except WebDriverException:
             print(color_fade("Lost connection to Chrome. Reconnecting...", "ff0000", "000000"))
@@ -106,7 +103,6 @@ def fetch_with_retries(url, retries=3, delay=5):
             time.sleep(delay)
     raise Exception("Max retries exceeded")
 
-# Usage
 try:
     response = fetch_with_retries(urljoin(url, js_url))
     with open(js_path, 'wb') as f:
@@ -131,7 +127,7 @@ def main():
     update_tabs_thread.start()
 
     print("Fetching tabs, please wait...")
-    time.sleep(10)  # Give it some time to fetch the tabs
+    time.sleep(10) 
     
     tabs = driver.window_handles
     tab_options = {}
@@ -161,7 +157,7 @@ def main():
 def fetch_page_source(driver):
     try:
         print("Page loaded. Type 'scrape' and press Enter to start scraping.")
-        input()  # Wait for user input to start scraping
+        input()  
         return driver.page_source
     except WebDriverException as e:
         print(f"Error fetching page source: {e}")
@@ -189,19 +185,16 @@ def save_github_pages_compatible(soup, directory, url):
     js_files = [js.get('src') for js in soup.find_all('script') if js.get('src')]
     css_files = [css.get('href') for css in soup.find_all('link', {'rel': 'stylesheet'}) if css.get('href')]
 
-    # Update paths in the HTML content
     for js in soup.find_all('script', src=True):
         js['src'] = os.path.join('scripts', os.path.basename(js['src']))
 
     for css in soup.find_all('link', href=True, rel='stylesheet'):
         css['href'] = os.path.join('styles', os.path.basename(css['href']))
 
-    # Save updated HTML as index.html
     with open(os.path.join(directory, 'index.html'), 'w', encoding='utf-8') as f:
         f.write(str(soup))
     print(color_fade(f"Saved GitHub Pages-compatible HTML: {os.path.join(directory, 'index.html')}", "00ffff", "0000ff"))
 
-    # Save JavaScript files
     for js_url in js_files:
         js_filename = os.path.basename(js_url)
         js_path = os.path.join(directory, 'scripts', js_filename)
@@ -214,7 +207,6 @@ def save_github_pages_compatible(soup, directory, url):
         except Exception as e:
             print(color_fade(f"Failed to save JavaScript file: {e}", "ff0000", "0000ff"))
 
-    # Save CSS files
     for css_url in css_files:
         css_filename = os.path.basename(css_url)
         css_path = os.path.join(directory, 'styles', css_filename)
@@ -240,7 +232,6 @@ def save_assets(soup, directory, url):
     js_files = [js.get('src') for js in soup.find_all('script') if js.get('src')]
     css_files = [css.get('href') for css in soup.find_all('link', {'rel': 'stylesheet'}) if css.get('href')]
     
-    # Save JavaScript files
     for js_url in js_files:
         js_filename = os.path.basename(js_url)
         js_path = os.path.join(directory, 'scripts', js_filename)
@@ -249,7 +240,6 @@ def save_assets(soup, directory, url):
             f.write(requests.get(urljoin(url, js_url)).content)
         print(color_fade(f"Saved JavaScript file: {js_path}", "00ffff", "0000ff"))
 
-    # Save CSS files
     for css_url in css_files:
         css_filename = os.path.basename(css_url)
         css_path = os.path.join(directory, 'styles', css_filename)
